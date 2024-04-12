@@ -1,8 +1,23 @@
 from flask import Flask, request, jsonify
 from transformers import AutoTokenizer, TFAutoModelForSequenceClassification
 import tensorflow as tf
+import boto3
+from botocore.exceptions import NoCredentialsError
 
 app = Flask(__name__)
+
+# Download model from S3
+def download_model_from_s3(bucket_name, model_key, download_path):
+    try:
+        s3 = boto3.client('s3')
+        s3.download_file(bucket_name, model_key, download_path)
+        print("Model downloaded successfully")
+    except NoCredentialsError:
+        print("Credentials not available")
+        raise
+    except Exception as e:
+        print("Error downloading model from S3:", e)
+        raise
 
 # Load tokenizer and model
 def load_model(model_name_or_path):
@@ -11,9 +26,12 @@ def load_model(model_name_or_path):
     return tokenizer, model
 
 # Replace this with your S3 location
-MODEL_S3_LOCATION = "model"
+MODEL_S3_BUCKET = "spammodel"
+MODEL_S3_KEY = "model"
 
-tokenizer, model = load_model(MODEL_S3_LOCATION)
+download_path = 'model'  # Temporary path for downloading the model files
+download_model_from_s3(MODEL_S3_BUCKET, MODEL_S3_KEY, download_path)
+tokenizer, model = load_model(download_path)
 
 @app.route('/predict', methods=['POST'])
 def predict():

@@ -1,4 +1,5 @@
 from modal import Image, Stub, web_endpoint, Volume
+from typing import Dict
 
 image = (
     Image.debian_slim(python_version="3.10")
@@ -12,19 +13,20 @@ image = (
 stub = Stub("stable-diffusion-xl")
 
 # Load tokenizer and model
-stub = Stub("test")
+stub = Stub("spam_detector")
 
 vol = Volume.from_name("model")
 
 @stub.function(image = image, volumes={"/model": vol})
-@web_endpoint()
-def predict(text):
+@web_endpoint(method="POST")
+def predict(body: Dict):
     try:
         from transformers import AutoTokenizer, TFAutoModelForSequenceClassification
         import tensorflow as tf
         tokenizer = AutoTokenizer.from_pretrained("/model/model")
         model = TFAutoModelForSequenceClassification.from_pretrained("/model/model")
         # Tokenize the text
+        text = body['text']
         inputs = tokenizer(text, return_tensors="tf", truncation=True, max_length=512)
 
         # Predict

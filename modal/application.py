@@ -51,15 +51,16 @@ def predict(body: Dict):
 def add_spam_message_to_training_dataset(body: Dict):
     import pandas as pd
     text = body['text']
-
     df = pd.read_csv("/model/model/training_data.csv")
     new_data = {'sms': text, 'label': 1}
     df = df.append(new_data, ignore_index=True)
-    df.to_csv("/model/model/training_data.csv")
+    df.to_csv("/model/model/training_data.csv", index=False)
+    vol.commit()
     
     return "Success"
 
-@stub.function(image=image, volumes={"/model": vol})
+@stub.function(image=image, volumes={"/model": vol}, timeout=1000)
+@web_endpoint()
 def retrain():
     try:
         import pandas as pd
@@ -96,7 +97,19 @@ def retrain():
 
         # Save model
         model.save_pretrained("/model/model")  # Saving it back to the mounted volume
+        vol.commit()
 
         return "Model retrained successfully"
+    except Exception as e:
+        return str(e)
+
+
+@stub.function(image=image, volumes={"/model": vol})
+@web_endpoint()
+def get_csv():
+    try:
+        import pandas as pd
+        df = pd.read_csv('/model/model/training_data.csv')
+        return df.to_string()
     except Exception as e:
         return str(e)

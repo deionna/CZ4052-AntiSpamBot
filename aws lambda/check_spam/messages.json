@@ -1,0 +1,5 @@
+{
+ "start": "<b>Hi!  I'm your friendly anti-spam bot for group chats.</b>\n\nAdd me as admin and I'll automatically remove spam messages to keep your group chat clean.\n\nWant to report something manually? Just reply with /report to any message you consider spam.\n\nUnsure about something? Respond with /help for a list of FAQs.\n\n<b>Let's chat in a spam-free zone!</b>",
+ "report fail": "Please select a message you wish to report by replying /report to the message.",
+ "help": "<b>1. Bot not responding to '/start' in your telegram group?</b>\nEnsure that you have promoted the bot to admin in your telegram group!\n\n<b>2. Spam messages not deleted?</b>\nOops! Did a sneaky spam message slip past my gaze? \nWe bots, though awesome, are still under training!\nHelp me become the ultimate spam slayer by reporting any suspicious messages with /report!\n\n<b>Together, we'll create a group chat paradise!</b>"
+}

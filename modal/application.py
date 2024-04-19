@@ -11,9 +11,6 @@ image = (
     )
 )
 
-stub = Stub("stable-diffusion-xl")
-
-# Load tokenizer and model
 stub = Stub("spam_detector")
 
 vol = Volume.from_name("model")
@@ -23,6 +20,7 @@ vol = Volume.from_name("model")
 def predict(body: Dict):
     from transformers import AutoTokenizer, TFAutoModelForSequenceClassification
     import tensorflow as tf
+    # Load tokenizer and model
     tokenizer = AutoTokenizer.from_pretrained("/model/model")
     model = TFAutoModelForSequenceClassification.from_pretrained("/model/model")
     # Tokenize the text
